@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TV Bumble</title>
+  <link rel='stylesheet' href='../stylesheets/main.css'>
+</head>
+<body>
+
+<% if logged_in? %>
+  logged in as <%= current_user.username %>
+  <form action="/session" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <button>logout</button>
+  </form>
+<% else %>
+  <a href="/login">login</a>
+<% end %>
+
+  <%= yield %>
+
+</body>
+</html>
