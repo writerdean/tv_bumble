@@ -34,21 +34,49 @@ get '/' do
   erb :index
 end
 
-get '/search' do
+# this is for escaping in sql
+def clean_text(input)
+  output = input.gsub(/'/) { |x| "\'#{x}" }
+  return output
+end
 
-  search_results = HTTParty.get("http://api.tvmaze.com/search/shows?q=#{params[:tvshow]}")
-  search_parsed = search_results.parsed_response
-  # search_results.each do |tvshow|
-  @tvshow = search_results[0]["show"]
+def get_show_from_api(name)
+  
+  puts "searching for show " + name
+  
+  url = "http://api.tvmaze.com/search/shows?q=#{name}"
+  puts "url is " + url
+
+  search_results = HTTParty.get(url)
+  # @search_parsed = search_results.parsed_response
+  # binding.pry
+  first_result = search_results.first
+  @tvshow = first_result["show"]
+  @showapi_id = @tvshow["id"]
   @url = @tvshow["url"]
-  @name = @tvshow["name"]
+  @name = clean_text(@tvshow["name"])
   @image_url = @tvshow["image"]["medium"]
-  @summary = @tvshow["summary"]
+  @summary = clean_text(@tvshow["summary"])
   @premiered = @tvshow["premiered"]
+  # puts @search_parsed
+  # puts @tvshow
+  puts @showapi_id
+  puts @url
+  puts @name
+  puts @image_url
+  puts @summary
+  puts @premiered
+end
 
+get '/search' do
+  
+  puts "Getting search result while searching for tv show #{params[:tvshow]}"
+
+  get_show_from_api(params[:tvshow])
+
+  puts "searched for show"
   puts 'tv show found, list created'
   erb :list
-  # binding.pry
 end
 # end
 
@@ -56,19 +84,15 @@ get '/login' do
   erb :login
 end
 
-
 post '/session' do
   # does user exist
   user = User.find_by(username: params[:username])
   if user && user.authenticate(params[:password])
     puts "User and password correct"
-  # if both true, you are good
-  # create a session
     session[:user_id] = user.id  #in brackets use a unique identifier
     redirect to('/')
   else 
-    # try again
-    binding.pry
+    # binding.pry
     erb :login
   end
 end
@@ -79,5 +103,33 @@ delete '/session' do
     redirect to('/login')
 end
 
+get '/rate' do
 
+  #  button id = zero
+  #  button id = one
+  #  button id = two
+  #  button id = three
+  #  button id = four
+  #  button id = five
 
+  # at button click, ad user_id, show_id and rating to watches table
+  
+  erb :rate
+end
+
+get '/watch/:name' do
+  puts "Yes, I watched the show #{params[:name]}"
+  # get user_id
+  # get show_name
+  # you have to insert it into the shows table before it has a show_id!!!!!!!!!!!!!!!!!
+
+  get_show_from_api(params[:name])
+  puts "user indicated that they watched the show, so searching for show again"
+  # binding.pry
+  sql = "INSERT INTO shows (show_id, name, premiered, image_url, summary) VALUES ('#{@showapi_id}', '#{@name}', '#{@premiered}', '#{@image_url}', '#{@summary}');"
+  puts sql
+  puts "we tried to put it into the database"
+  # # sql = "INSERT INTO watches (user_id, show_id) VALUES (#{current_user.id}, #{})"
+  run_sql(sql)
+  redirect to('/')
+end

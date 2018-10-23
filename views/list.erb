@@ -5,5 +5,11 @@
 
 <img src=" <%= @image_url%>" alt="tv show poster">
 
-<p><%=@name%></p> 
 <p><%=@summary%></p>
+
+<p></p>
+
+
+  <form action="/watch/<%= @tvshow["name"] %>" method="get">
+    <button>Watched It</button>
+  </form>
