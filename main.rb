@@ -43,29 +43,29 @@ end
 
 def get_show_from_api(name)
   
-  puts "searching for show " + name
+  puts "From method get_show_from_api:  searching for show " + name
   
   url = "http://api.tvmaze.com/search/shows?q=#{name}"
   puts "url is " + url
 
   @search_results = HTTParty.get(url)
 
-  # @search_parsed = search_results.parsed_response
-  # first_result = @search_results.first
-  # @tvshow = first_result["show"]
-  # @showapi_id = @tvshow["id"]
-  # @url = @tvshow["url"]
-  # @name = clean_text(@tvshow["name"])
-  # @image_url = @tvshow["image"]["medium"]
-  # @summary = clean_text(@tvshow["summary"])
-  # @premiered = @tvshow["premiered"]
-  binding.pry
+  @search_parsed = @search_results.parsed_response
+  first_result = @search_results.first
+  @tvshow = first_result["show"]
+  @showapi_id = @tvshow["id"]
+  @url = @tvshow["url"]
+  @name = clean_text(@tvshow["name"])
+  @image_url = @tvshow["image"]["medium"]
+  @summary = clean_text(@tvshow["summary"])
+  @premiered = @tvshow["premiered"]
+  # binding.pry
 
 end
 
 get '/search' do
   
-  puts "Getting search result while searching for tv show #{params[:tvshow]}"
+  puts "From route /search:  getting search result while searching for tv show #{params[:tvshow]}"
 
   get_show_from_api(params[:tvshow])
 
@@ -73,7 +73,47 @@ get '/search' do
   puts 'tv show found, list created'
   erb :list
 end
-# end
+
+get '/get/:name' do
+  puts "From route /get/:name = checking if in database"
+  name = params['name']
+  if(load_from_db(name) == false)
+    get_show_from_api(name)
+    write_show_to_database()
+    puts "got show from api"
+  end
+  erb :show
+end
+
+def write_show_to_database
+  name = clean_text(@name)
+  summary = clean_text(@summary)
+  
+  sql = "INSERT INTO shows (show_id, name, premiered, image_url, summary) VALUES ('#{@showapi_id}', '#{@name}', '#{@premiered}', '#{@image_url}', '#{@summary}');"
+  run_sql(sql)
+  puts "Put show into shows database"
+  # redirect to()
+end
+
+
+def load_from_db(name)
+  puts "looking for tv show in the database"
+name = clean_text(name)
+sql = "SELECT * FROM shows WHERE name = '#{name}';"
+
+shows = run_sql(sql)
+  if (shows.count == 0)
+    return false
+  end
+binding.pry
+found_show = shows.first
+@image_url = found_show["image_url"]
+@summary = found_show["summary"]
+@name = found_show["name"]
+@premiered = found_show["premiered"]
+  return true
+end
+
 
 get '/login' do
   erb :login
@@ -95,6 +135,7 @@ end
 delete '/session' do
   # destroy the session
   session[:user_id] = nil
+  puts 'goodbye'
     redirect to('/login')
 end
 
@@ -113,19 +154,15 @@ get '/rate' do
 end
 
 get '/watch/:name' do
-  puts "Yes, I watched the show #{params[:name]}"
-  get_show_from_api(params[:name])
-  puts "user indicated that they watched the show, so searching for show again"
-  # binding.pry
-  sql = "INSERT INTO shows (show_id, name, premiered, image_url, summary) VALUES ('#{@showapi_id}', '#{@name}', '#{@premiered}', '#{@image_url}', '#{@summary}');"
-  run_sql(sql)
-  redirect to('/')
+
 end
 
-# def get_users(user_id)
-# end
+def get_users(user_id)
 
-# def get_shows_by_users(user_id)
-# end
+end
+
+def get_shows_by_users(user_id)
+
+end
 
 
