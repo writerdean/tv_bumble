@@ -1,0 +1,8 @@
+<img src=" <%= @image_url%>" alt="tv show poster">
+
+<p><%= @summary %></p>
+
+
+  <form action="/watch/<%= @tvshow["name"] %>" method="get">
+    <button>Watched It</button>
+  </form>

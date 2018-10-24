@@ -1,15 +1,9 @@
-
-<a href="<%= @tvshow["url"] %>"><%= @tvshow["name"] %></a>  (<%= @tvshow["premiered"] %>)
-<p></p>
-
-
-<img src=" <%= @image_url%>" alt="tv show poster">
-
-<p><%=@summary%></p>
-
-<p></p>
-
-
-  <form action="/watch/<%= @tvshow["name"] %>" method="get">
-    <button>Watched It</button>
-  </form>
+<ul>
+<%@search_results.each do |result|%>
+  <li>
+    <a href="/get/<%= result["show"]["name"] %>" >
+      <%= result["show"]["name"] %>  (<%= result["show"]["premiered"] %>)
+    </a>
+  </li>
+<% end %>
+</ul>
