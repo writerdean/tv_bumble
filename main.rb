@@ -65,11 +65,10 @@ end
 
 get '/search' do
   
-  puts "From route /search:  getting search result while searching for tv show #{params[:tvshow]}"
+  puts "From route /search:  getting search result for tv show #{params[:tvshow]}"
 
   get_show_from_api(params[:tvshow])
 
-  puts "searched for show"
   puts 'tv show found, list created'
   erb :list
 end
@@ -82,6 +81,7 @@ get '/get/:name' do
     write_show_to_database()
     puts "got show from api"
   end
+  # binding.pry
   erb :show
 end
 
@@ -105,12 +105,18 @@ shows = run_sql(sql)
   if (shows.count == 0)
     return false
   end
-binding.pry
-found_show = shows.first
-@image_url = found_show["image_url"]
-@summary = found_show["summary"]
-@name = found_show["name"]
-@premiered = found_show["premiered"]
+  found_show = shows.first
+  @id = found_show["id"] # required for rating
+  @image_url = found_show["image_url"]
+  @summary = found_show["summary"]
+  @name = found_show["name"]
+  @premiered = found_show["premiered"]
+
+  puts @id
+  puts @name
+  puts "grabbed info from database"
+
+  # binding.pry
   return true
 end
 
@@ -139,30 +145,52 @@ delete '/session' do
     redirect to('/login')
 end
 
-get '/rate' do
+get '/rate/:id' do
+  puts "Got to the rate page, good job!!!!!!!"
+  puts @id
+  puts "check for @id.  it's required for posting the rating"
+  # at button click, call add_rating()
 
-  #  button id = zero
-  #  button id = one
-  #  button id = two
-  #  button id = three
-  #  button id = four
-  #  button id = five
-
-  # at button click, ad user_id, show_id and rating to watches table
+  sql = "SELECT * FROM shows WHERE id = '#{params[:id]}';"
+  shows = run_sql(sql)
+    found_show = shows.first
+    @id = found_show["id"] # required for rating
+    @image_url = found_show["image_url"]
+    @summary = found_show["summary"]
+    @name = found_show["name"]
+    @premiered = found_show["premiered"]
   
+    puts @id
+    puts @name
+    puts "grabbed info from database"
+
+  binding.pry
   erb :rate
 end
 
-get '/watch/:name' do
-
+post '/rate/:id' do
+  puts @id  #not getting id 
+  puts "the rating entered is #{params[:rate]}"
+  binding.pry
+  add_rating()
 end
 
-def get_users(user_id)
 
+# def get_users(user_id)
+#   sql = "SELECT * FROM users;"
+
+# end
+
+# def get_shows_by_users(user_id)
+#   sql = "SELECT * FROM users;"
+# end
+
+def add_rating(user_id, show_id)
+  binding.pry
+
+  sql = "INSERT INTO watches (user_id, show_id, rating) VALUES ('#{user_id}', '#{id}', #{rate}');"
+  run_sql(sql)
 end
 
-def get_shows_by_users(user_id)
-
-end
 
 
