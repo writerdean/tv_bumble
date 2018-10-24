@@ -147,7 +147,7 @@ end
 
 get '/rate/:id' do
   puts "Got to the rate page, good job!!!!!!!"
-  puts @id
+  puts "from get - " + params[:id]
   puts "check for @id.  it's required for posting the rating"
   # at button click, call add_rating()
 
@@ -159,20 +159,20 @@ get '/rate/:id' do
     @summary = found_show["summary"]
     @name = found_show["name"]
     @premiered = found_show["premiered"]
-  
+    
+    binding.pry
     puts @id
     puts @name
     puts "grabbed info from database"
 
-  binding.pry
   erb :rate
 end
 
-post '/rate/:id' do
-  puts @id  #not getting id 
+post '/rate/:id' do  
+  puts "from post - " + params[:id]  #not getting id 
   puts "the rating entered is #{params[:rate]}"
   binding.pry
-  add_rating()
+  add_rating(session[:user_id], params[:id], params[:rate]) #show_id not being captured
 end
 
 
@@ -185,10 +185,13 @@ end
 #   sql = "SELECT * FROM users;"
 # end
 
-def add_rating(user_id, show_id)
+def add_rating(current_user, show_id, rating)
+  puts current_user
+  puts show_id
+  puts rating
   binding.pry
 
-  sql = "INSERT INTO watches (user_id, show_id, rating) VALUES ('#{user_id}', '#{id}', #{rate}');"
+  sql = "INSERT INTO watches (user_id, show_id, rating) VALUES ('#{current_user}', '#{show_id}', '#{rating}');"
   run_sql(sql)
 end
 
