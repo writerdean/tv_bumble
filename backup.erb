@@ -1,0 +1,53 @@
+<h1>TV Bumble</h1>
+
+<p>User name</p>
+
+<form action="/search">
+  <textarea name="tvshow"></textarea>
+  <button>search</button>
+</form>
+
+<p>  <a href="#{@users}" ></a></p>
+
+<div class="flexbox-container">
+  <div class="box"> </div>
+  <div class="box"> </div>
+  <div class="box"> </div>
+  <div class="box"> </div>
+  <div class="box"> </div>
+  <div class="box"> </div>
+  <div class="box"> </div>
+  <div class="box"> </div>
+  <div class="box"> </div>
+
+</div>
+
+<ul>
+<%@search_results.each do |result|%>
+  <li>
+    <a href="/get/<%= result["show"]["name"] %>" >
+      <%= result["show"]["name"] %>  (<%= result["show"]["premiered"] %>)
+    </a>
+  </li>
+<% end %>
+</ul>
+
+
+
+
+def get_all_users
+  User.all
+
+end
+
+def get_shows_by_users
+  Show.all
+
+end
+
+def get_watches_by_users
+end
+
+def get_watches_by_shows
+end
+

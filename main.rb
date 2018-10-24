@@ -43,10 +43,8 @@ end
 
 def get_show_from_api(name)
   
-  puts "From method get_show_from_api:  searching for show " + name
   
   url = "http://api.tvmaze.com/search/shows?q=#{name}"
-  puts "url is " + url
 
   @search_results = HTTParty.get(url)
 
@@ -65,16 +63,12 @@ end
 
 get '/search' do
   
-  puts "From route /search:  getting search result for tv show #{params[:tvshow]}"
-
   get_show_from_api(params[:tvshow])
 
-  puts 'tv show found, list created'
   erb :list
 end
 
 get '/get/:name' do
-  puts "From route /get/:name = checking if in database"
   name = params['name']
   if(load_from_db(name) == false)
     get_show_from_api(name)
@@ -91,13 +85,11 @@ def write_show_to_database
   
   sql = "INSERT INTO shows (show_id, name, premiered, image_url, summary) VALUES ('#{@showapi_id}', '#{@name}', '#{@premiered}', '#{@image_url}', '#{@summary}');"
   run_sql(sql)
-  puts "Put show into shows database"
   # redirect to()
 end
 
 
 def load_from_db(name)
-  puts "looking for tv show in the database"
 name = clean_text(name)
 sql = "SELECT * FROM shows WHERE name = '#{name}';"
 
@@ -112,10 +104,6 @@ shows = run_sql(sql)
   @name = found_show["name"]
   @premiered = found_show["premiered"]
 
-  puts @id
-  puts @name
-  puts "grabbed info from database"
-
   # binding.pry
   return true
 end
@@ -129,7 +117,6 @@ post '/session' do
   # does user exist
   user = User.find_by(username: params[:username])
   if user && user.authenticate(params[:password])
-    puts "User and password correct"
     session[:user_id] = user.id  #in brackets use a unique identifier
     redirect to('/')
   else 
@@ -141,15 +128,10 @@ end
 delete '/session' do
   # destroy the session
   session[:user_id] = nil
-  puts 'goodbye'
     redirect to('/login')
 end
 
 get '/rate/:id' do
-  puts "Got to the rate page, good job!!!!!!!"
-  puts "from get - " + params[:id]
-  puts "check for @id.  it's required for posting the rating"
-  # at button click, call add_rating()
 
   sql = "SELECT * FROM shows WHERE id = '#{params[:id]}';"
   shows = run_sql(sql)
@@ -160,19 +142,13 @@ get '/rate/:id' do
     @name = found_show["name"]
     @premiered = found_show["premiered"]
     
-    binding.pry
-    puts @id
-    puts @name
-    puts "grabbed info from database"
+    # binding.pry
 
   erb :rate
 end
 
 post '/rate/:id' do  
-  puts "from post - " + params[:id]  #not getting id 
-  puts "the rating entered is #{params[:rate]}"
-  binding.pry
-  add_rating(session[:user_id], params[:id], params[:rate]) #show_id not being captured
+  add_rating(session[:user_id], params[:id], params[:rate]) 
 end
 
 
@@ -186,13 +162,11 @@ end
 # end
 
 def add_rating(current_user, show_id, rating)
-  puts current_user
-  puts show_id
-  puts rating
-  binding.pry
+  # binding.pry
 
   sql = "INSERT INTO watches (user_id, show_id, rating) VALUES ('#{current_user}', '#{show_id}', '#{rating}');"
   run_sql(sql)
+  redirect to('/')
 end
 
 
