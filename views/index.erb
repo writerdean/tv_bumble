@@ -1,4 +1,15 @@
+<div class="center">
+
+<%@users.each do |result|%>
+
+    <a href="/users/<%= result["id"] %>" >
+      <%= result["username"] %>
+    </a>
+<% end %>
+
 <h1>TV Bumble</h1>
+
+</div>
 
 <form action="/search">
   <textarea name="tvshow"></textarea>
@@ -6,23 +17,9 @@
 </form>
 
 
-<form action="/users/" method="get">
-  <input type="hidden" name="users">
-  <button>View other collections</button>
-</form>
-
-<%@users.each do |result|%>
-
-    <a href="/users/<%= result["username"] %>" >
-      <%= result["username"] %>
-    </a>
-<% end %>
-
-
 <%@user_shows_results.each do |result|%>
 
-    <a href="/get/<%= result["show_id"] %>" >
-      <% result["show_id"] %>
+      <% result["image_url"] %>
       <% Show.find(result["show_id"]).image_url %>
       <img src="<%= Show.find(result["show_id"]).image_url %>" alt="tv show poster">
     </a>

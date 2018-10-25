@@ -1,17 +1,17 @@
-<h1>Other users are:</h1>
-
-
+<div class="center">
 <%@users.each do |result|%>
 
-    <a href="/users/<%= result["username"] %>" >
+    <a href="/users/<%= result["id"] %>" >
       <%= result["username"] %>
     </a>
 <% end %>
 
+<h1>Other users' collections</h1>
+
+</div>
 
 <%@user_shows_results.each do |result|%>
 
-    <a href="/get/<%= result["show_id"] %>" >
       <% result["show_id"] %>
       <% Show.find(result["show_id"]).image_url %>
       <img src="<%= Show.find(result["show_id"]).image_url %>" alt="tv show poster">

@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'sinatra/reloader'
 require 'pg'
 require 'pry'
 require 'httparty'
@@ -34,7 +35,7 @@ get '/' do
   puts "Current user is #{current_user.username}"
   puts "Current user id is #{current_user.id}"
   get_users()
-  get_shows_by_user(current_user)
+  get_shows_by_user(current_user.id)
   # binding.pry
   erb :index
 end
@@ -75,7 +76,7 @@ get '/search' do
 
   puts "searched for show"
   puts 'tv show found, list created'
-  binding.pry
+  # binding.pry
   erb :list
 end
 
@@ -84,12 +85,13 @@ get '/get/:name' do
   name = params['name']
   if(load_from_db(name) == false)
     get_show_from_api(name)
-    # add if statement - if name already in db, do not add
+    # - if name already in db, do not add
     write_show_to_database()
     puts "got show from api"
   end
   erb :show
 end
+
 
 def write_show_to_database
   name = clean_text(@name)
@@ -111,8 +113,10 @@ shows = run_sql(sql)
   if (shows.count == 0)
     return false
   end
-binding.pry
+# binding.pry
 found_show = shows.first
+@id = found_show["id"] # required for rating
+@showapi_id = found_show["show_id"]
 @image_url = found_show["image_url"]
 @summary = found_show["summary"]
 @name = found_show["name"]
@@ -145,31 +149,42 @@ delete '/session' do
     redirect to('/login')
 end
 
-get '/rate' do
+get '/rate/:id' do
 
-  #  button id = zero
-  #  button id = one
-  #  button id = two
-  #  button id = three
-  #  button id = four
-  #  button id = five
+  sql = "SELECT * FROM shows WHERE id = '#{params[:id]}';"
+  shows = run_sql(sql)
+    found_show = shows.first
+    @id = found_show["id"] # required for rating
+    @image_url = found_show["image_url"]
+    @summary = found_show["summary"]
+    @name = found_show["name"]
+    @premiered = found_show["premiered"]
+    
+    # binding.pry
 
-  # at button click, ad user_id, show_id and rating to watches table
-  
   erb :rate
 end
 
 get '/watch/:name' do
 end
 
+post '/rate/:id' do  
+  add_rating(session[:user_id], params[:id], params[:rate]) 
+end
+
 def add_rating(current_user, show_id, rating)
   # binding.pry
   sql = "INSERT INTO watches (user_id, show_id, rating) VALUES ('#{current_user}', '#{show_id}', '#{rating}');"
   run_sql(sql)
+  puts "added the rating to the database"
+  puts "should redirect to homepage now"
+  # binding.pry
   redirect to('/')
 end
 
-get '/users/' do
+get '/users/:id' do
+  get_users()
+  get_shows_by_user(params[:id])
   erb :users
 end
 
@@ -179,8 +194,10 @@ def get_users()
   # binding.pry
 end
 
-def get_shows_by_user(current_user)
-  sql = "SELECT * FROM watches WHERE user_id = #{current_user.id};"
+def get_shows_by_user(id)
+  puts "username = #{id}"
+  sql = "SELECT * FROM watches WHERE user_id = '#{id}' ORDER BY rating DESC;"
+
   @user_shows_results = run_sql(sql)
   # binding.pry
 end

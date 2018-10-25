@@ -9,13 +9,18 @@
 
 <% if logged_in? %>
   <div id="login"><%= current_user.username %></div>
-  <form action="/session" method="post">
+  <form class="main" action="/session" method="post">
     <input type="hidden" name="_method" value="delete">
-    <button>logout</button>
+    <button>Logout</button> 
   </form>
 <% else %>
-  <a href="/login">login</a>
+  <a href="/login">Login</a>
 <% end %>
+
+<form class="main" action="/">
+    <input type="submit" value="Home" />
+</form>
+
 
   <%= yield %>
 
