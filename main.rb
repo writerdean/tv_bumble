@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'sinatra/reloader'
 require 'pg'
 require 'pry'
 require 'httparty'
@@ -32,8 +31,6 @@ end
 
 get '/' do
   redirect to ('/login') unless logged_in?
-  puts "Current user is #{current_user.username}"
-  puts "Current user id is #{current_user.id}"
   get_users()
   get_shows_by_user(current_user.id)
   # binding.pry
@@ -47,9 +44,7 @@ def clean_text(input)
 end
 
 def get_show_from_api(name)
-  
-  puts "From method get_show_from_api:  searching for show " + name
-  
+   
   url = "http://api.tvmaze.com/search/shows?q=#{name}"
   puts "url is " + url
 
@@ -70,12 +65,8 @@ end
 
 get '/search' do
   
-  puts "From route /search:  getting search result while searching for tv show #{params[:tvshow]}"
-
   get_show_from_api(params[:tvshow])
 
-  puts "searched for show"
-  puts 'tv show found, list created'
   # binding.pry
   erb :list
 end
