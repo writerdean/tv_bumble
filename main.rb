@@ -1,5 +1,4 @@
 require 'sinatra'
-# require 'sinatra/reloader' #only reloads main.rb
 require 'pg'
 require 'pry'
 require 'httparty'
