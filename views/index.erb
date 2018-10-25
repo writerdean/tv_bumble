@@ -6,11 +6,15 @@
 </form>
 
 
+<form action="/users/" method="get">
+  <input type="hidden" name="users">
+  <button>View other collections</button>
+</form>
+
 <%@users.each do |result|%>
 
-    <a href="/get/<%= result["username"] %>" >
+    <a href="/users/<%= result["username"] %>" >
       <%= result["username"] %>
-
     </a>
 <% end %>
 

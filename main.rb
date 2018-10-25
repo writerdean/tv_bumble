@@ -31,11 +31,11 @@ end
 
 get '/' do
   redirect to ('/login') unless logged_in?
-  # binding.pry
   puts "Current user is #{current_user.username}"
   puts "Current user id is #{current_user.id}"
   get_users()
   get_shows_by_user(current_user)
+  # binding.pry
   erb :index
 end
 
@@ -75,6 +75,7 @@ get '/search' do
 
   puts "searched for show"
   puts 'tv show found, list created'
+  binding.pry
   erb :list
 end
 
@@ -168,7 +169,7 @@ def add_rating(current_user, show_id, rating)
   redirect to('/')
 end
 
-get '/users/:username' do
+get '/users/' do
   erb :users
 end
 
