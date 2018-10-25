@@ -160,23 +160,13 @@ get '/rate' do
 end
 
 get '/watch/:name' do
-
-<<<<<<< Updated upstream
 end
 
-def get_users(user_id)
-
-end
-
-def get_shows_by_users(user_id)
-
-=======
 def add_rating(current_user, show_id, rating)
   # binding.pry
   sql = "INSERT INTO watches (user_id, show_id, rating) VALUES ('#{current_user}', '#{show_id}', '#{rating}');"
   run_sql(sql)
   redirect to('/')
->>>>>>> Stashed changes
 end
 
 get '/users/:username' do
