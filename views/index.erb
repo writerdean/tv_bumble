@@ -6,4 +6,25 @@
 </form>
 
 
+<<<<<<< Updated upstream
 
+=======
+<%@users.each do |result|%>
+
+    <a href="/get/<%= result["username"] %>" >
+      <%= result["username"] %>
+
+    </a>
+<% end %>
+
+
+<%@user_shows_results.each do |result|%>
+
+    <a href="/get/<%= result["show_id"] %>" >
+      <% result["show_id"] %>
+      <% Show.find(result["show_id"]).image_url %>
+      <img src="<%= Show.find(result["show_id"]).image_url %>" alt="tv show poster">
+    </a>
+
+<% end %>
+>>>>>>> Stashed changes

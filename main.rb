@@ -1,5 +1,5 @@
 require 'sinatra'
-require 'sinatra/reloader' #only reloads main.rb
+# require 'sinatra/reloader' #only reloads main.rb
 require 'pg'
 require 'pry'
 require 'httparty'
@@ -32,6 +32,11 @@ end
 
 get '/' do
   redirect to ('/login') unless logged_in?
+  # binding.pry
+  puts "Current user is #{current_user.username}"
+  puts "Current user id is #{current_user.id}"
+  get_users()
+  get_shows_by_user(current_user)
   erb :index
 end
 
@@ -79,6 +84,7 @@ get '/get/:name' do
   name = params['name']
   if(load_from_db(name) == false)
     get_show_from_api(name)
+    # add if statement - if name already in db, do not add
     write_show_to_database()
     puts "got show from api"
   end
@@ -155,6 +161,7 @@ end
 
 get '/watch/:name' do
 
+<<<<<<< Updated upstream
 end
 
 def get_users(user_id)
@@ -163,6 +170,28 @@ end
 
 def get_shows_by_users(user_id)
 
+=======
+def add_rating(current_user, show_id, rating)
+  # binding.pry
+  sql = "INSERT INTO watches (user_id, show_id, rating) VALUES ('#{current_user}', '#{show_id}', '#{rating}');"
+  run_sql(sql)
+  redirect to('/')
+>>>>>>> Stashed changes
 end
 
+get '/users/:username' do
+  erb :users
+end
+
+def get_users()
+  sql = "SELECT * FROM users;"
+  @users = run_sql(sql)
+  # binding.pry
+end
+
+def get_shows_by_user(current_user)
+  sql = "SELECT * FROM watches WHERE user_id = #{current_user.id};"
+  @user_shows_results = run_sql(sql)
+  # binding.pry
+end
 

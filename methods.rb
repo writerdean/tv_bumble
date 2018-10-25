@@ -131,7 +131,7 @@ get '/watch/:name' do
   puts "Yes, I watched the show #{params[:name]}"
   get_show_from_api(params[:name])
   puts "user indicated that they watched the show, so searching for show again"
-  binding.pry
+  # binding.pry
   sql = "INSERT INTO shows (show_id, name, premiered, image_url, summary) VALUES ('#{@showapi_id}', '#{@name}', '#{@premiered}', '#{@image_url}', '#{@summary}');"
   run_sql(sql)
   redirect to('/')
