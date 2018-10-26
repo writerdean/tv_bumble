@@ -8,6 +8,6 @@ I started by creating the databases and choosing an API to get the tv show data 
 
 I also had to create a list of the TV show collections that every other user has, and list those shows when you click on their name.  As the users are currently only a few of my friends, this feature will need to be refactored if more people sign up.  I will also need to add a feature to create an account, as currently you are only able to log in.
 
-Features I would like to add in the future: click on the image of the show to be taken to the information page, reformat the way users are displayed and display each user's name above their collection, ensure that if a show has already been added to the database, it cannot be added again, and add more styling.
+Features I would like to add in the future: click on the image of the show to be taken to the information page, reformat the way users are displayed and display each user's name above their collection, ensure that if a show has already been added to the database, it cannot be added again, show ratings for each show, and add more styling.
 
 My app has been deployed on Heroku, and you can see it here.
