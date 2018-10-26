@@ -10,4 +10,4 @@ I also had to create a list of the TV show collections that every other user has
 
 Features I would like to add in the future: click on the image of the show to be taken to the information page, reformat the way users are displayed and display each user's name above their collection, ensure that if a show has already been added to the database, it cannot be added again, show ratings for each show, and add more styling.
 
-My app has been deployed on Heroku, and you can see it here.
+My app has been deployed on Heroku, and you can see it [here](https://agile-brook-98478.herokuapp.com/?).
