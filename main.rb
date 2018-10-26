@@ -2,7 +2,7 @@ require 'sinatra'
 require 'pg'
 require 'pry'
 require 'httparty'
-
+require 'sinatra/reloader' if ENV['RACK_ENV'] != 'production'
 require_relative 'db_config'
 require_relative 'models/show'
 require_relative 'models/watches'
@@ -97,6 +97,8 @@ def write_show_to_database
   s.image_url = @image_url
   s.summary = @summary
   s.save
+
+  @id = s.id
 
   # redirect to()
 end
